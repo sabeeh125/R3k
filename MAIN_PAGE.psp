@@ -1,0 +1,548 @@
+<%IF COOKIE_EXISTS('EMAIL') AND EMAIL_IN IS NOT NULL THEN set_cookie('EMAIL', EMAIL_IN); END IF;
+IF COOKIE_EXISTS('PASSWORD') AND PASSWORD_IN IS NOT NULL THEN set_cookie('PASSWORD', PASSWORD_IN); END IF;%>
+<!DOCTYPE html>
+<%@page language="PL/SQL"%>
+<%@plsql procedure="EDIT_PAGE"%>
+<%@plsql parameter="EMAIL_IN" DEFAULT="NULL"%>
+<%@plsql parameter="PASSWORD_IN" DEFAULT="NULL"%>
+<%! RESUMATOR_ID_VAL USERS.RESUMATOR_ID%TYPE;
+AUTHENTICATE_INT NUMBER := 0;%>
+
+
+<html lang="en">
+
+<!-- 
+*
+*
+*
+*    Head Section
+*
+*
+*
+ -->
+
+
+  <head>
+    <meta charset="utf-8">
+    <title>R3K - Resumator3000 - Your Resume Partner</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- google font links connected to google as absolute links -->
+    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Droid+Serif' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Noto+Sans' rel='stylesheet' type='text/css'>
+
+    <!-- css styles relative link needs to be maintained -->
+    <link href="http://userpages.umbc.edu/~booth1/resumator3000/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="http://userpages.umbc.edu/~booth1/resumator3000/assets/css/docs.css" rel="stylesheet">
+    <!-- r3k-styles.css contains custom settings to override TWBS code -->
+    <link href="http://userpages.umbc.edu/~booth1/resumator3000/assets/css/r3k-styles.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+    </style>
+
+    <!-- must have this file for responsive features to work -->
+    <link href="http://userpages.umbc.edu/~booth1/resumator3000/assets/css/bootstrap-responsive.css" rel="stylesheet">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144"  href="http://userpages.umbc.edu/~booth1/resumator3000/assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114"  href="http://userpages.umbc.edu/~booth1/resumator3000/assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72"    href="http://userpages.umbc.edu/~booth1/resumator3000/assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed"                  href="http://userpages.umbc.edu/~booth1/resumator3000/assets/ico/apple-touch-icon-57-precomposed.png">
+    <link rel="shortcut icon"                                 href="http://userpages.umbc.edu/~booth1/resumator3000/assets/ico/favicon.png">                                  
+
+    <!-- google analytics -->
+    <!-- ???? need to find out if google analytics code must be on each page ???? -->
+    <script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-37867892-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+
+    </script>
+
+    <!-- jquery assets -->
+    <script src="http://userpages.umbc.edu/~booth1/resumator3000/assets/js/jquery-1.9.1.min.js"></script>
+    <script src="http://userpages.umbc.edu/~booth1/resumator3000/assets/js/jquery.smooth-scroll.js"></script>
+    <script>
+      $(document).ready(function() {
+        $('ul.floatnav a').smoothScroll();
+      });
+    </script>
+
+  <!-- code for date pickers -->
+
+    <link rel="stylesheet" href="http://userpages.umbc.edu/~booth1/resumator3000/assets/css/jquery-ui.css" />
+
+    <script src="http://userpages.umbc.edu/~booth1/resumator3000/assets/js/jquery-1.9.1.js"></script>
+    <script src="http://userpages.umbc.edu/~booth1/resumator3000/assets/js/jquery-ui.js"></script>
+
+    <script>
+      $(function() {
+        $( '#datepicker1' ).datepicker({
+          changeMonth: true,
+          changeYear: true, 
+        });
+      });/*education add modal*/
+
+      $(function() {
+        $( '#datepicker2' ).datepicker({
+          changeMonth: true,
+          changeYear: true
+        });
+      });
+
+      $(function() {
+        $( '#datepicker3' ).datepicker({
+          changeMonth: true,
+          changeYear: true
+        });
+      });/* certification add modal */
+
+      $(function() {
+        $( '#datepicker4' ).datepicker({
+          changeMonth: true,
+          changeYear: true
+        });
+      });/* publication add modal */
+
+      $(function() {
+        $( '#datepicker5' ).datepicker({
+          changeMonth: true,
+          changeYear: true
+        });
+      });/* work experience add modal */
+
+      $(function() {
+        $( '#datepicker6' ).datepicker({
+          changeMonth: true,
+          changeYear: true
+        });
+      });/* work experience add modal */
+
+      $(function() {
+        $( '#GRADUATION_DATE_IN' ).datepicker({
+          changeMonth: true,
+          changeYear: true
+        });
+      });/* education edit modal */
+
+      $(function() {
+        $( '#DATE_RECORDED_IN' ).datepicker({
+          changeMonth: true,
+          changeYear: true
+        });
+      });/* certification edit modal */
+
+      $(function() {
+        $( '#RESEARCH_DATE_PRESENTED_IN' ).datepicker({
+          changeMonth: true,
+          changeYear: true
+        });
+      });/* publication edit modal */    
+
+      $(function() {
+        $( '#WORK_START_DATE_IN' ).datepicker({
+          changeMonth: true,
+          changeYear: true
+        });
+      });/* work experience edit modal */    
+
+      $(function() {
+        $( '#WORK_END_DATE_IN' ).datepicker({
+          changeMonth: true,
+          changeYear: true
+        });
+      });/* work experience edit modal */    
+
+    </script>
+
+  <!-- end code for datepickers -->
+
+  </head>
+
+<!-- 
+*
+*
+*    Body Section
+*
+*
+ -->
+
+<body>
+<script>
+
+function postwith (to,p) {
+  var myForm = document.createElement("form");
+  myForm.method="post" ;
+  myForm.action = to ;
+  for (var k in p) {
+    var myInput = document.createElement("input") ;
+    myInput.setAttribute("name", k) ;
+    myInput.setAttribute("value", p[k]);
+    myForm.appendChild(myInput) ;
+  }
+  document.body.appendChild(myForm) ;
+  myForm.submit() ;
+  document.body.removeChild(myForm) ;
+}
+</script>
+
+<!-- START NAVIGATION SECTION -->
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container control-font-size">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="http://userpages.umbc.edu/~booth1/resumator3000/html/index.html">Resumator3000</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li class="active"><a href="javascript:postwith('http://oracle.is.umbc.edu:8080/classpsp/IS420_TEAM_TRG.EDIT_PAGE',{email_in:'<%=email_in%>',password_in:'<%=password_in%>'})">Home</a></li>
+              <li><a href="http://userpages.umbc.edu/~booth1/resumator3000/html/about.html">About</a></li>
+              <li><a href="http://userpages.umbc.edu/~booth1/resumator3000/html/contact.html">Contact</a></li>
+              <li><a href="http://userpages.umbc.edu/~booth1/r3k/index.htm" target="_blank">Project Site</a></li>
+
+<%AUTHENTICATE_INT := AUTHENTICATE(UPPER(EMAIL_IN), PASSWORD_IN);%>
+<%IF EMAIL_IN IS NULL AND PASSWORD_IN IS NULL THEN%>
+
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div><!-- end navbar navbar-inverse navbar-fixed-top -->       
+  
+<div class="container"><!-- main page container -->
+
+  <!-- probably going to need to span this div with TBS spans -->
+  <div id="" class="" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+        <h3 id="myModalLabel">Create Your Account</h3>
+      </div>
+      <div class="modal-body">
+        <form action="http://oracle.is.umbc.edu:8080/classpsp/IS420_TEAM_TRG.FORM_ADD_ACCOUNT" method="get">
+            <p>These fields are required.</p>
+              <input class="span3" type="text" id="USER_EMAIL_ADDRESS_IN" name="USER_EMAIL_ADDRESS_IN" placeholder="Enter an email address">
+              <input class="span3" type="password" id="USER_PASSWORD_IN" name="USER_PASSWORD_IN" placeholder="Enter a password">
+            <div class="form-inline margin-form-inline" >
+              You can update these later!
+              <input class="span2" type="text" id="F_NAME_IN" name="F_NAME_IN" placeholder="First Name">
+              <input class="span2" type="text" id="M_NAME_IN" name="M_NAME_IN" placeholder="Middle Name">
+              <input class="span2" type="text" id="L_NAME_IN" name="L_NAME_IN" placeholder="Last Name">
+              <input class="span1" type="text" id="SURNAME_IN" name="SURNAME_IN" placeholder="II, Jr.">
+            </div>
+            <div class="form-inline margin-form-inline">
+              <input class="span2" type="text" id="PHONE_NUMBER_IN" name="PHONE_NUMBER_IN" placeholder="555-555-5555">
+              <input class="span3" type="text" id="USER_STREET_ADDRESS_IN" name="STREET_IN" placeholder="Street Address">
+              <input class="span2" type="text" id="USER_CITY_IN" name="CITY_IN" placeholder="City">
+            </div>
+            <div class="form-inline margin-form-inline">
+              <input class="span2" type="text" id="USER_STATE_IN" name="STATE_IN" placeholder="State (Ex: MD, VA, SD)">
+              <input class="span2" type="text" id="USER_ZIPCODE_IN" name="ZIPCODE_IN" placeholder="Zipcode">
+             <div>   
+               <button class="btn btn-success" type="submit">Become a Teamator!</button>
+              </div>  
+            </div>
+      </div><!-- close modal-body -->
+      </form>    
+    </div>
+  </div>
+<%ELSIF AUTHENTICATE_INT = 0 OR AUTHENTICATE_INT = 2 THEN%>
+
+            </ul>
+            <form class="navbar-form pull-right" action="http://oracle.is.umbc.edu:8080/classpsp/IS420_TEAM_TRG.EDIT_PAGE">
+              <input class="span2" NAME="EMAIL_IN" type="text" placeholder="Email">
+              <input class="span2" NAME="PASSWORD_IN" type="password" placeholder="Password">
+              <button type="submit" class="btn">Log In</button>
+            </form>
+
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>            
+  
+<div class="container"><!-- main page container -->
+
+<%! COUNT_IN INTEGER :=1;%>
+<%ACCOUNT_MANAGE(COUNT_IN);%>
+
+<%ELSE%>
+<%SELECT RESUMATOR_ID INTO RESUMATOR_ID_VAL FROM USERS WHERE EMAIL_ADDRESS = UPPER(EMAIL_IN);%>
+
+
+            <li><a href="http://oracle.is.umbc.edu:8080/classpsp/IS420_TEAM_TRG.RESUME_OUTPUT">Resume Link</a></li>
+            </ul>
+
+            <a href="http://userpages.umbc.edu/~booth1/resumator3000/html/index.html" class="btn pull-right">Logout</a>
+            
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+<!--  END NAVIGATION SECTION -->   
+
+    <div class="container"><!-- main page container -->
+
+      <div class="row">
+<!-- SIDEBAR NAVIGATION ON LEFT OF PAGE -->
+        <div class="span3 affix"> <!-- removed bs-docs-sidebar   -->
+          <ul class="floatnav nav nav-list bs-docs-sidenav" data-spy="affix">
+            <li><a href="#contactinfo">     <i class="icon-chevron-right"></i> Contact Information</a></li>
+            <li><a href="#objective">       <i class="icon-chevron-right"></i> Objective Statement</a></li>
+            <li><a href="#education">       <i class="icon-chevron-right"></i> Education</a></li>
+            <li><a href="#certifications">  <i class="icon-chevron-right"></i> Certifications and Licenses</a></li>
+            <li><a href="#research">        <i class="icon-chevron-right"></i> Research, Publications and Presentations</a></li>
+            <li><a href="#projects">        <i class="icon-chevron-right"></i> Projects</a></li>
+            <li><a href="#academic">        <i class="icon-chevron-right"></i> Academic Coursework</a></li>
+            <li><a href="#skills">          <i class="icon-chevron-right"></i> Standard Skills</a></li>
+            <li><a href="#technical">       <i class="icon-chevron-right"></i> Technical Skills</a></li>
+            <li><a href="#design">          <i class="icon-chevron-right"></i> Design Skills</a></li>
+            <li><a href="#workhistory">     <i class="icon-chevron-right"></i> Work History</a></li>
+            <li><a href="#honors">          <i class="icon-chevron-right"></i> Honors and Awards</a></li>
+            <li><a href="#activities">      <i class="icon-chevron-right"></i> Extra Curricular</a></li>
+            <li><a href="#references">      <i class="icon-chevron-right"></i> References and Contacts</a></li>
+          </ul>
+        </div>
+
+        <!-- front-page holds all the conent on the right of the page -->
+    <div class="front-page system-serif system-sans-serif span8 offset3">
+    <!-- ###### REMOVE THE MESSAGE BELOW WHEN MOVED INTO OFFICIAL ALPHA STATUS ##### -->
+    <p><span class="label label-info">Resumator3000 is a work in progress and isn't scheduled to be fully operational until end of May 2013. Thank you.</span></p>
+
+<!-- STUDENT USER PERSONAL DATA -->
+<section id="contactinfo">
+        <h4><a onmousedown="populate_user_fields()" href="#contact-modal" data-toggle="modal"><i class="icon-pencil"></i></a>
+        <%PAGE_USERS_CURSOR(RESUMATOR_ID_VAL, EMAIL_IN);%>
+        </section>
+
+
+
+<!-- RESUME CONTENT BEGINS -->
+        <section id="objective">
+          <!-- user objective section -->
+          <h4>Objective: <a href="#objective-modal" data-toggle="modal"><i class="icon-pencil"> </i></a> </h4>
+          <p class="well well-small"> <%OBJECTIVE_CURSOR(RESUMATOR_ID_VAL);%> </p>
+        </section>
+          <hr> 
+
+
+
+<!-- EDUCATION SECTION -->
+<!-- EDUCATION CURSOR DECLARATION -->
+
+          <section id="education">
+            <h4>Education: <a href="#add-education-modal" data-toggle="modal"><i class="icon-plus"> </i></a>  
+                <a onmousedown="populate_education_fields()" href="#edit-education-modal" data-toggle="modal"><i class="icon-pencil"> </i></a>
+            </h4>    
+       <%PAGE_EDUCATION_CURSOR(RESUMATOR_ID_VAL);%>
+          </section>  
+          <hr>
+
+<!-- CERTIFICATIONS AND LICENSES -->
+<!-- POPULATE CERTIFICATIONS-->
+
+
+          <section id="certifications">
+            <h4>Certifications and Licenses: <a href="#add-certifications-modal" data-toggle="modal"><i class="icon-plus"> </i></a> <a onmousedown="populate_certification_fields()" href="#edit-certifications-modal" data-toggle="modal"><i class="icon-pencil"> </i></a> </h4>
+
+          <div class="row"><!-- certifications and licenses row -->
+
+      <%PAGE_CERTIFICATION_CURSOR(RESUMATOR_ID_VAL);%>
+
+          </div><!-- end certifications and licenses row -->
+          
+          </section>
+          <hr>  
+
+
+<!-- RESEARCH SECTION -->
+<!-- POPULATE RESEARCH-->
+
+          <section id="research">
+            <h4>Research, Publications and Presentations: <a href="#add-research-modal" data-toggle="modal"><i class="icon-plus"> </i></a> <a onmousedown="populate_publication_fields()" href="#edit-research-modal" data-toggle="modal"><i class="icon-pencil"> </i></a> </h4>
+              <!-- loop through all listed projects -->
+      <%PAGE_PUBLICATION_CURSOR(RESUMATOR_ID_VAL);%>
+          </section>
+          <hr> 
+
+<!-- PROJECTS SECTION -->
+    <section id="projects">
+      <h4>Projects: <a href="#add-project-modal" data-toggle="modal"><i class="icon-plus"> </i></a> <a onmousedown="populate_projects_fields()" href="#edit-project-modal" data-toggle="modal"><i class="icon-pencil"> </i></a> </h4>
+  <!-- loop through all listed projects -->
+      <%PAGE_PROJECT_CURSOR(RESUMATOR_ID_VAL);%>
+    </section>
+  <hr>  
+
+<!-- ACADEMIC COURSEWORK -->
+   <section id="academic">
+      <h4>Academic Coursework: <a href="#add-academic-course-modal" data-toggle="modal"><i class="icon-plus"> </i></a> <a onmousedown="populate_academic_fields()" href="#edit-academic-course-modal" data-toggle="modal"><i class="icon-pencil"> </i></a> </h4>
+         <div class="row"><!-- academic coursework row -->
+      <%PAGE_COURSE_WORK_CURSOR(RESUMATOR_ID_VAL);%>
+        </div><!-- end academic coursework row -->
+
+    </section>
+  <hr>  
+<!-- STANDARD SKILLS -->
+
+
+          <section id="skills">
+            <h4>Skills: <a href="#add-skills-modal" data-toggle="modal"><i class="icon-plus"> </i></a> <a onmousedown="populate_standard_skill_fields()" href="#edit-skills-modal" data-toggle="modal"><i class="icon-pencil"> </i></a> </h4>
+            
+            <div class="row"><!-- standard skills row -->
+        <%PAGE_STANDARD_SKILLS_CURSOR(RESUMATOR_ID_VAL);%>
+            </div><!-- end standard skills row -->
+          </section>
+          <hr>
+
+
+
+<!-- TECHNICAL SKILLS -->
+
+          <section id="technical">
+            <h4>Technical Skills: <a href="#add-technical-skills-modal" data-toggle="modal"><i class="icon-plus"> </i></a> <a onmousedown="populate_technical_skill_fields()" href="#edit-technical-skills-modal" data-toggle="modal"><i class="icon-pencil"> </i></a> </h4>
+
+            <!-- technical row --> 
+
+            <div class="row"><!-- techinal skills row -->
+        <%PAGE_TECHNICAL_SKILLS_CURSOR(RESUMATOR_ID_VAL);%>
+              </div><!-- end TECHNICAL skills row -->
+          </section>
+          <hr>
+
+
+<!-- DESIGN SKILLS -->
+
+          <section id="design">
+            <h4>Design Skills: <a href="#add-design-skills-modal" data-toggle="modal"><i class="icon-plus"> </i></a> <a onmousedown="populate_design_skill_fields()" href="#edit-design-skills-modal" data-toggle="modal"><i class="icon-pencil"> </i></a> </h4>
+
+            <!-- DESIGN row -->
+
+            <div class="row"><!-- academic coursework row --> 
+        <%PAGE_DESIGN_SKILLS_CURSOR(RESUMATOR_ID_VAL);%>
+             </div><!-- end DESIGN skills row -->
+          </section>
+          <hr>
+
+<!-- WORK HISTORY -->
+<!--POPULATE WORK HISTORY-->
+
+          <section id="workhistory">
+            <h4>Work History: <a href="#add-work-history-modal" data-toggle="modal"><i class="icon-plus"> </i></a> <a onmousedown="populate_work_history_fields()" href="#edit-work-history-modal" data-toggle="modal"><i class="icon-pencil"> </i></a> </h4>
+
+            <div class="row"><!-- work history box -->
+              <% PAGE_WORK_EXPERIENCE_CURSOR (RESUMATOR_ID_VAL); %>
+            </div> <!-- end first work history row -->
+          </section>
+          <hr>
+
+<!-- HONORS AND AWARDS SECTION -->
+<!-- POPULATE HONORS AND AWARDS SECTION -->
+
+          <section id="honors">
+            <h4>Honors and Awards: <a href="#add-honors-modal" data-toggle="modal"><i class="icon-plus"> </i></a> <a onmousedown="populate_award_fields()" href="#edit-honors-modal" data-toggle="modal"><i class="icon-pencil"> </i></a> </h4>
+            <% PAGE_AWARD_CURSOR (RESUMATOR_ID_VAL);%>
+          </section>
+          <hr> 
+
+
+<!-- EXTRACURRICULAR ACTIVITIES SECTION -->
+
+
+          <section id="activities">
+            <h4>Extra Curricular: <a href="#add-extracurricular-modal" data-toggle="modal"><i class="icon-plus"> </i></a> <a onmousedown="populate_ex_curr_Fields()" href="#edit-extracurricular-modal" data-toggle="modal"><i class="icon-pencil"> </i></a> </h4>
+
+            <div class="row"><!-- extra curricular row -->
+              <% PAGE_EXTRA_CURRICULAR_CURSOR (RESUMATOR_ID_VAL); %>
+             </div><!-- extra curricular row -->
+          </section>
+          <hr>
+
+<!-- REFERENCES SECTION -->
+
+          <section id="references">
+            <h4>References and Contacts: <a href="#add-references-modal" data-toggle="modal"><i class="icon-plus"> </i></a> <a onmousedown="populate_ref_Fields()" href="#edit-references-modal" data-toggle="modal"><i class="icon-pencil"> </i></a> </h4>
+              <% PAGE_REFERENCES_CURSOR (RESUMATOR_ID_VAL); %>
+          </section>
+          <hr> 
+
+<!-- RESUME CONTENT ENDS -->
+
+    <!-- bottom-page div controls the empty space at the bottom of the document -->      
+    <div class="bottom-page"><section id="bottom-page"></section></div>
+            
+    </div> <!-- close front-page div-->
+
+  </div> <!-- close main row div -->
+
+</div> <!-- close main page container div -->
+
+
+<!-- FOOTER SECTION -->
+
+    <footer>
+      <p>Resumator3000 &copy; 2013</p>
+    </footer>
+ 
+<!--
+* 
+*
+*
+*    Javascript Section
+*
+*
+ -->
+
+
+<!-- javascript =================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    
+    <!-- <script src="http://userpages.umbc.edu/~booth1/resumator3000/assets/js/jquery.js"></script> -->
+    <script src="http://userpages.umbc.edu/~booth1/resumator3000/assets/js/bootstrap-transition.js"></script>
+    <script src="http://userpages.umbc.edu/~booth1/resumator3000/assets/js/bootstrap-alert.js"></script>
+    <script src="http://userpages.umbc.edu/~booth1/resumator3000/assets/js/bootstrap-modal.js"></script>
+    <!-- <script src="http://userpages.umbc.edu/~booth1/resumator3000/assets/js/bootstrap-dropdown.js"></script>
+    <script src="http://userpages.umbc.edu/~booth1/resumator3000/assets/js/bootstrap-scrollspy.js"></script>
+    <script src="http://userpages.umbc.edu/~booth1/resumator3000/assets/js/bootstrap-tab.js"></script>
+    <script src="http://userpages.umbc.edu/~booth1/resumator3000/assets/js/bootstrap-tooltip.js"></script>
+    <script src="http://userpages.umbc.edu/~booth1/resumator3000/assets/js/bootstrap-popover.js"></script> -->
+    <script src="http://userpages.umbc.edu/~booth1/resumator3000/assets/js/bootstrap-button.js"></script>
+    <script src="http://userpages.umbc.edu/~booth1/resumator3000/assets/js/bootstrap-collapse.js"></script>
+    <!-- <script src="http://userpages.umbc.edu/~booth1/resumator3000/assets/js/bootstrap-carousel.js"></script> -->
+    <script src="http://userpages.umbc.edu/~booth1/resumator3000/assets/js/bootstrap-typeahead.js"></script>
+    
+
+    <script src="http://userpages.umbc.edu/~booth1/resumator3000/assets/js/bootstrap-affix.js"></script>
+    <script src="http://userpages.umbc.edu/~booth1/resumator3000/assets/js/holder/holder.js"></script>
+    <script src="http://userpages.umbc.edu/~booth1/resumator3000/assets/js/google-code-prettify/prettify.js"></script>
+    <script src="http://userpages.umbc.edu/~booth1/resumator3000/assets/js/application.js"></script>
+    <script src="http://userpages.umbc.edu/~booth1/resumator3000/assets/js/editforms.js"></script>
+
+<%
+END IF;
+EXCEPTION
+WHEN OTHERS THEN %> 
+<p><%=SQLERRM%></p>
+
+</body>
+</html>

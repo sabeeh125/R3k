@@ -1,0 +1,79 @@
+<%@page language="PL/SQL"%>
+<%@plsql procedure="FORM_ADD_ACCOUNT"%>
+<%@plsql parameter="USER_EMAIL_ADDRESS_IN"%>
+<%@plsql parameter="USER_PASSWORD_IN"%>
+<%@plsql parameter="F_NAME_IN"%>
+<%@plsql parameter="M_NAME_IN"%>
+<%@plsql parameter="L_NAME_IN"%>
+<%@plsql parameter="SURNAME_IN"%>
+<%@plsql parameter="PHONE_NUMBER_IN"%>
+<%@plsql parameter="STREET_IN"%>
+<%@plsql parameter="CITY_IN"%>
+<%@plsql parameter="STATE_IN"%>
+<%@plsql parameter="ZIPCODE_IN"%>
+
+
+<%!
+COUNT_IN INT :=0;
+RESUMATOR_ID_IN VARCHAR2(50);	
+%>
+<%
+
+COUNT_IN := ACCOUNT_CREATE(USER_EMAIL_ADDRESS_IN,USER_PASSWORD_IN);
+
+IF COUNT_IN = 0 THEN%>
+
+<%ACCOUNT_MANAGE(COUNT_IN);%>
+
+<%
+
+ELSE
+RESUMATOR_ID_IN := RES_ID_SEQ.CURRVAL;
+
+UPDATE USERS
+    SET
+     CITY               = CITY_IN,
+     STATE              = STATE_IN,
+     ZIPCODE            = ZIPCODE_IN,
+     F_NAME             = F_NAME_IN,
+     L_NAME             = L_NAME_IN,
+     PHONE_NUMBER       = PHONE_NUMBER_IN,
+     STREET             = STREET_IN,
+     SURNAME            = SURNAME_IN
+     WHERE RESUMATOR_ID = RESUMATOR_ID_IN;
+ %>
+<HEAD>
+<script>
+
+function postwith (to,p) {
+  var myForm = document.createElement("form");
+  myForm.method="post" ;
+  myForm.action = to ;
+  for (var k in p) {
+    var myInput = document.createElement("input") ;
+    myInput.setAttribute("name", k) ;
+    myInput.setAttribute("value", p[k]);
+    myForm.appendChild(myInput) ;
+  }
+  document.body.appendChild(myForm) ;
+  myForm.submit() ;
+  document.body.removeChild(myForm) ;
+}
+</script>
+</HEAD>
+<BODY onload="javascript:postwith('http://oracle.is.umbc.edu:8080/classpsp/IS420_TEAM_TRG.EDIT_PAGE',{email_in:'<%=USER_EMAIL_ADDRESS_IN%>',password_in:'<%=USER_PASSWORD_IN%>'})"></a>
+
+
+</BODY>
+</HTML>
+<%
+
+END IF;
+
+
+
+%>
+
+<%EXCEPTION
+WHEN OTHERS THEN%>
+<%=SQLERRM%>
